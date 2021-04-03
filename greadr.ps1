@@ -20,6 +20,7 @@ function Write-Help {
     Write-Host "`n----- Commands -----" -ForegroundColor Red -BackgroundColor White -NoNewline; Write-Host ""
     Write-Host "--create-json" -NoNewline -ForegroundColor Green -BackgroundColor Black; Write-Host " builds a blank greadr config file in your current dir."
     Write-Host "    [-i -ignore]" -NoNewline -ForegroundColor Green -BackgroundColor Black; Write-Host " in creating/overwriting greadr.json, adds the greadr.json file to you .gitignore (creates one if .git folder exists)."
+    Write-Host "    [--overwrite]" -NoNewline -ForegroundColor Green -BackgroundColor Black; Write-Host " if a greadr.json file already exists, this param is required to change it."
     Write-Host "--create-files" -NoNewline -ForegroundColor Green -BackgroundColor Black; Write-Host " builds blank files for text/data before and after the map tree"
     Write-Host "    these files can be renamed, but must match in the greadr.json config file"
     Write-Host "--ignore-greadr" -NoNewline -ForegroundColor Green -BackgroundColor Black; Write-Host " same as -i -ignore, only adds config file to .gitignore, doesn't affect greadr.json content"
@@ -72,13 +73,28 @@ function Write-Json-File {
     param (
         [string]$dir,
         [string]$jsonArgs
-    )
+    )    
+
+    $actionArg = " "
+    $actionArg2 = " "
+
     if([string]::IsNullOrWhiteSpace($jsonArgs)) {
-        $actionArg = $strArgs.Split(" ")[1] 
+        $actionArg = $strArgs.Split(" ")[0] 
+        $actionArg2 = $strArgs.Split(" ")[1] 
     }    
     else {
-        $actionArg = $strArgs.Split(" ")[2] 
+        $actionArg = $strArgs.Split(" ")[1]
+        $actionArg2 = $strArgs.Split(" ")[2]
     }
+
+    if($actionArg -ne "--overwrite" -and $actionArg2 -ne "--overwrite") {
+        if (Test-Path "$dir\greadr.json") {
+            Write-Host "greadr.json already exists. No changes made." -ForegroundColor Yellow -BackgroundColor Black
+            Write-Host "use: " -NoNewline; Write-Host "--overwrite" -ForegroundColor Yellow -BackgroundColor Black -NoNewline; Write-Host " to overwrite your greadr.json"
+            Exit
+        }
+    }
+
     $content = ""
     $type = "default"    
     if ($jsonArgs -eq "jupyter" -or $jsonArgs -eq "j") { 
