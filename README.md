@@ -42,14 +42,11 @@ https://github.com/OwenSteele/greadr
 
 **The installer is large ~80MB**
 
-use single branch clone to only clone the installer branch:
+Use file size filter to clone without the installer (see manual installation):
 ```
- > git clone https://github.com/OwenSteele/greadr --branch installer --single-branch
+ > git clone --filter=blob:limit=50m https://github.com/OwenSteele/greadr
 ```
-Clone **without** installer:
-```
- > git clone https://github.com/OwenSteele/greadr --branch master --single-branch
-```
+
 
 ### Manual installation
 
