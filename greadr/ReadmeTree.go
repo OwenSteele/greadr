@@ -29,6 +29,10 @@ type GConfig struct {
 		IgnoreEmpty bool
 		Append      bool
 	}
+	Text struct {
+		Before string
+		After  string
+	}
 }
 
 var data GConfig
@@ -93,6 +97,8 @@ func main() {
 	} else {
 		output = "\n   ----- " + data.Format.FileTitle + " -----   \n\n --- Created with greadr ---\nhttps://github.com/OwenSteele/greadr\n\n" + output + "\n\n"
 	}
+
+	output = data.Text.Before + output + data.Text.After
 
 	//if data.Format.Append {
 	//headerfooter := "<|---------------------------------------------|>"

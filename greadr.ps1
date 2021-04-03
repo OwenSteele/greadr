@@ -70,14 +70,14 @@ function Write-Json-File {
     $content = ""
     $type = "default"    
     if ($jsonArgs -eq "jupyter" -or $jsonArgs -eq "j") { 
-        $content = '{"ignore":{"folders":[],"fileTypes":["png","jpg","jpeg"],"partials":["---images","---.ipynb_checkpoints","-checkpoint.ipynb"],"fileNames":[],"OutputFile":false},"output":{"name":"README","type":"md"},"format":{"fileTitle": "Jupyter Notebooks","doubleSpace":false,"ignoreEmpty":true,"append":true}}' 
+        $content = '{"ignore":{"folders":[],"fileTypes":["png","jpg","jpeg"],"partials":["---images","---.ipynb_checkpoints","-checkpoint.ipynb"],"fileNames":[],"OutputFile":false},"output":{"name":"README","type":"md"},"format":{"fileTitle": "Jupyter Notebooks","doubleSpace":false,"ignoreEmpty":true,"append":true},"text":{"before": "","after": ""}}' 
         $type = "jupyter"
     }
     elseif ($jsonArgs -eq "txt" -or $jsonArgs -eq "text" -or $jsonArgs -eq "t") {
-        $content = '{"ignore":{"folders":[],"fileTypes":[],"partials":[],"fileNames":[],"OutputFile":false},"output":{"name":"README","type":"txt"},"format":{"fileTitle":"GReadrDirTree","doubleSpace":false,"ignoreEmpty":true,"append":true}}'
+        $content = '{"ignore":{"folders":[],"fileTypes":[],"partials":[],"fileNames":[],"OutputFile":false},"output":{"name":"README","type":"txt"},"format":{"fileTitle":"GReadrDirTree","doubleSpace":false,"ignoreEmpty":true,"append":true},"text":{"before": "","after": ""}}'
     }
     else {
-        $content = '{"ignore":{"folders":[],"fileTypes":[],"partials":[],"fileNames":[],"OutputFile":false},"output":{"name":"README","type":"md"},"format":{"fileTitle": "GReadr Dir Tree","doubleSpace":false,"ignoreEmpty": true,"append":true}}'
+        $content = '{"ignore":{"folders":[],"fileTypes":[],"partials":[],"fileNames":[],"OutputFile":false},"output":{"name":"README","type":"md"},"format":{"fileTitle": "GReadr Dir Tree","doubleSpace":false,"ignoreEmpty": true,"append":true},"text":{"before": "","after": ""}}'
     }
 
     Set-Content $dir\greadr.json "$content"
