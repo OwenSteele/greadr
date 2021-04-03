@@ -19,7 +19,10 @@ function Write-Help {
     Write-Host "    NOTE: this setup is required for each machine account user."
     Write-Host "`n----- Commands -----" -ForegroundColor Red -BackgroundColor White -NoNewline; Write-Host ""
     Write-Host "--create-json" -NoNewline -ForegroundColor Green -BackgroundColor Black; Write-Host " builds a blank greadr config file in your current dir."
-    Write-Host "    [-i -ignore]" -NoNewline -ForegroundColor Green -BackgroundColor Black; Write-Host " adds the greadr.json file to you .gitignore (creates one if .git folder exists)."
+    Write-Host "    [-i -ignore]" -NoNewline -ForegroundColor Green -BackgroundColor Black; Write-Host " in creating/overwriting greadr.json, adds the greadr.json file to you .gitignore (creates one if .git folder exists)."
+    Write-Host "--create-files" -NoNewline -ForegroundColor Green -BackgroundColor Black; Write-Host " builds blank files for text/data before and after the map tree"
+    Write-Host "    these files can be renamed, but must match in the greadr.json config file"
+    Write-Host "--ignore-greadr" -NoNewline -ForegroundColor Green -BackgroundColor Black; Write-Host " same as -i -ignore, only adds config file to .gitignore, doesn't affect greadr.json content"
     Write-Host "--setup" -NoNewline -ForegroundColor Green -BackgroundColor Black; Write-Host " Initial greadr setup (checks for go compiler, local greadr.json file, sets up alias."
     Write-Host "--template -t" -NoNewline -ForegroundColor Green -BackgroundColor Black; Write-Host " designates that a template is used for creating the directory map."
     Write-Host "    If this is not called, and no local greadr.json file exists, map will not be created."
@@ -45,15 +48,24 @@ function Update-Git-Ignore {
     }
     else{
         New-Item .\.gitignore >$null
+        Write-Host "created .gitignore" -ForegroundColor Cyan
     }
     $existing = Get-Content .\.gitignore | out-string
 
-    Write-Host "$existing"
-
     if($existing -like "*greadr.json*"){}
     else {
-        Add-Content .\.gitignore "`n"
-        Add-Content .\.gitignore "greadr.json"
+        Add-Content .\.gitignore "`ngreadr.json"
+        Write-Host "ignoring greadr.json" -ForegroundColor Cyan
+    }
+    if($existing -like "*greadr/*"){}
+    else {
+        Add-Content .\.gitignore "`ngreadr/"
+        Write-Host "ignoring local greadr folder" -ForegroundColor Cyan
+    }
+    if($existing -like "*greadrsetup.exe*"){}
+    else {
+        Add-Content .\.gitignore "`ngreadrsetup.exe"
+        Write-Host "ignoring greadr setup exe" -ForegroundColor Cyan
     }
 }
 function Write-Json-File {
@@ -70,14 +82,14 @@ function Write-Json-File {
     $content = ""
     $type = "default"    
     if ($jsonArgs -eq "jupyter" -or $jsonArgs -eq "j") { 
-        $content = '{"ignore":{"folders":[],"fileTypes":["png","jpg","jpeg"],"partials":["---images","---.ipynb_checkpoints","-checkpoint.ipynb"],"fileNames":[],"OutputFile":false},"output":{"name":"README","type":"md"},"format":{"fileTitle": "Jupyter Notebooks","doubleSpace":false,"ignoreEmpty":true,"append":true},"text":{"before": "","after": ""}}' 
+        $content = '{"ignore":{"folders":[],"fileTypes":["png","jpg","jpeg"],"partials":["---images","---.ipynb_checkpoints","-checkpoint.ipynb"],"fileNames":[],"outputFile":false,"greadrFiles":true,"gitFiles":true},"output":{"name":"README","type":"md"},"format":{"fileTitle": "Jupyter Notebooks","doubleSpace":false,"ignoreEmpty":true},"data":{"before":{"text":"","filePath":"before.md"},"after":{"text":"","filePath":"after.md"}}}' 
         $type = "jupyter"
     }
     elseif ($jsonArgs -eq "txt" -or $jsonArgs -eq "text" -or $jsonArgs -eq "t") {
-        $content = '{"ignore":{"folders":[],"fileTypes":[],"partials":[],"fileNames":[],"OutputFile":false},"output":{"name":"README","type":"txt"},"format":{"fileTitle":"GReadrDirTree","doubleSpace":false,"ignoreEmpty":true,"append":true},"text":{"before": "","after": ""}}'
+        $content = '{"ignore":{"folders":[],"fileTypes":[],"partials":[],"fileNames":[],"outputFile":false,"greadrFiles":true,"gitFiles":false},"output":{"name":"README","type":"txt"},"format":{"fileTitle":"GReadrDirTree","doubleSpace":false,"ignoreEmpty":true},"data":{"before":{"text":"","filePath":""},"after":{"text":"","filePath":""}}}'
     }
     else {
-        $content = '{"ignore":{"folders":[],"fileTypes":[],"partials":[],"fileNames":[],"OutputFile":false},"output":{"name":"README","type":"md"},"format":{"fileTitle": "GReadr Dir Tree","doubleSpace":false,"ignoreEmpty": true,"append":true},"text":{"before": "","after": ""}}'
+        $content = '{"ignore":{"folders":[],"fileTypes":[],"partials":[],"fileNames":[],"outputFile":false,"greadrFiles":true,"gitFiles":true},"output":{"name":"README","type":"md"},"format":{"fileTitle": "GReadr Dir Tree","doubleSpace":false,"ignoreEmpty": true},"data":{"before":{"text":"","filePath":"before.md"},"after":{"text":"","filePath":"after.md"}}}'
     }
 
     Set-Content $dir\greadr.json "$content"
@@ -85,6 +97,29 @@ function Write-Json-File {
 
     if ($actionArg -eq "-i" -or $actionArg -eq "-ignore"){
         Update-Git-Ignore
+    }
+}function Write-Data-Files {
+    if(Test-Path "$terminalDir\greadr\"){
+        
+    if(Test-Path "$terminalDir\greadr\after.md"){
+    }
+    else{
+        new-item .\greadr\after.md >$null
+        Write-Host "created after.md" -ForegroundColor Cyan
+    }
+    if(Test-Path "$terminalDir\greadr\before.md"){
+    }
+    else{
+        new-item .\greadr\before.md >$null
+        Write-Host "created before.md" -ForegroundColor Cyan
+    }
+    }
+    else{
+        new-item "$terminalDir\greadr" -itemtype directory >$null
+        new-item "$terminalDir\greadr\after.md" >$null
+        new-item "$terminalDir\greadr\before.md" >$null
+        Write-Host "created after.md" -ForegroundColor Cyan
+        Write-Host "created before.md" -ForegroundColor Cyan
     }
 }
 function Confirm-File-Exists() {
@@ -182,14 +217,14 @@ function Invoke-ReadmeTree() {
         Write-Host "Ensure this template file is in the GReader templates folder."
         Exit
     }
-    if ((Confirm-File-Exists "$basedir\greadr" "\ReadmeTree.go")) {}
+    if ((Confirm-File-Exists "$basedir\go" "\ReadmeTree.go")) {}
     else {
         Write-Host "'ReadmeTree.go' not found." -ForegroundColor Red
         Write-Host "Ensure it is in the correct folder."
         Exit
     }
     Write-Host "Starting GReadr" -ForegroundColor Green
-    $params = "run $PSScriptRoot\greadr\ReadmeTree.go".Split(" ")
+    $params = "run $PSScriptRoot\go\ReadmeTree.go".Split(" ")
     if ($alternatePath -ne "") {
         $params += "$alternatePath$templateArg"
     }
@@ -197,17 +232,22 @@ function Invoke-ReadmeTree() {
     Exit
 }
 
+function Uninstall-GReadr {    
+    $forced = $strArgs.Split(" ")[1] 
+
+    if ($forced -ne "-force"){
+        Write-Host "To Uninstall GReadr, add '--force'" -ForegroundColor Red   
+        Write-Host "If you are Unhappy with GReadr" -ForegroundColor Cyan       
+    }
+}
+
 if ($strArgs -eq "") {
     if (Confirm-File-Exists $terminalDir "\greadr.json") {
         Invoke-ReadmeTree
     }
     else {
-        Write-Host "'greadr.json' not found." -ForegroundColor Red
-        Write-Host "Create with command: " -NoNewline
-        Write-Host "greadr --create-json" -ForegroundColor Green -BackgroundColor Black  
-        Write-Host "Or type: " -NoNewline
-        Write-Host "greadr -t [templateType: no type = default README.md]" -ForegroundColor Green -BackgroundColor Black    
-        Write-Host "To Use a default GReader template"
+        Write-Host "'greadr.json' not found." -ForegroundColor Red -NoNewline; Write-Host " Use template: " -NoNewline; Write-Host "greadr -t [templateType]" -ForegroundColor Green  
+        Write-Host "Create with command: " -NoNewline; Write-Host "greadr --create-json" -ForegroundColor Green -BackgroundColor Black  
         Exit              
     }         
 }
@@ -221,6 +261,12 @@ switch -regex ($strArgs) {
     }
     "^--create-json" {
         Write-Json-File $terminalDir $strArgs.Split(" ")[1]
+    }
+    "^--create-files" {
+        Write-Data-Files
+    }
+    "^--ignore-greadr" {
+        Update-Git-Ignore
     }
     "^--get-templates" {
         & Get-ChildItem $templatePath
@@ -247,11 +293,14 @@ switch -regex ($strArgs) {
     ("^--help") {
         Write-Help
     }
-    ("^-info") {
+    ("^-i") {
         Write-Info
     }
     ("^--info") {
         Write-Info
+    }
+    ("^--uninstall") {
+        Uninstall-GReadr
     }
     default {        
         Write-Host "cmd not recognised. Ensure params start with " -ForegroundColor Red -NoNewline -BackgroundColor Black

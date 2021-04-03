@@ -11,8 +11,9 @@
         "type": "txt"
     },
     "format": {
-        "fileTitle": "GReadr Dir Tree",
+        "fileTitle": "GReadrDirTree",
         "doubleSpace": false,
-        "ignoreEmpty": true
+        "ignoreEmpty": true,
+        "append": true
     }
 }

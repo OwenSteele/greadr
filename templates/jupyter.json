@@ -21,6 +21,7 @@
     "format": {
         "fileTitle": "Jupyter Notebooks",
         "doubleSpace": false,
-        "ignoreEmpty": true
+        "ignoreEmpty": true,
+        "append": true
     }
 }

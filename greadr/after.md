@@ -1,35 +1,3 @@
-# GReadr - Git Readme Builder
-
- **By Owen Steele 2021**
-
-GReadr is designed to help map out and visual project repo directories, for both the makers and visitors!
-
-#### GReader is built in Go and Powershell
-
-*Sample product below:*
-
-# GReadr Dir Tree
-
-### Created with **greadr**
-https://github.com/OwenSteele/greadr
-<pre>ROOT_FOLDER
-<br>|   greadr.json
-<br>|   greadr.ps1
-<br>|   greadrsetup.exe
-<br>|   LICENSE
-<br>|   README.md
-<br>+---go
-<br>|       ReadmeTree.go
-<br>+---greadr
-<br>|       after.md
-<br>|       before.md
-<br>\---templates
-<br>        default.json
-<br>        jupyter.json
-<br>        text.json
-
-</pre>
-
 # Installing and Setup
 
 ### greadrsetup.exe

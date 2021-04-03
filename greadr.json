@@ -4,19 +4,27 @@
         "fileTypes": [],
         "partials": [],
         "fileNames": [],
-        "OutputFile": false
+        "outputFile": false,
+        "greadrFiles": false,
+        "gitFiles": false
     },
     "output": {
         "name": "README",
         "type": "md"
     },
     "format": {
-        "fileTitle": "Greadr sample",
+        "fileTitle": "GReadr Dir Tree",
         "doubleSpace": false,
         "ignoreEmpty": true
     },
-    "text":{
-        "before": "# GReadr - Git Readme Builder\n\n **By Owen Steele 2021**\n\nGReadr is designed to help map out and visual project repo directories, for both the makers and visitors!\n\n#### GReader is built in Go and Powershell\n\n*Sample product below:*",
-        "after": "# Installing and Setup\n\n Simply clone or download the Zip to any folder to get started.\n* In powershell, navigate to the root folder and type:\n<pre> > ./greadr.ps1 --setup </pre>\n* **Go Lang compiler is required**, setup will help with it's installation\nhttps://golang.org/doc/install\n* **Once set up, greadr should be usable in any folder.**\n<pre> > greadr --help</pre>\n\n ## Issues\n\n **Powershell execution policy may need to be altered to run GReadr:**\n<pre>set-executionpolicy -executionpolicy unrestricted<br>OR<br>powershell.exe -executionpolicy unrestricted -command ./greadr.ps1</pre>\n\n ## Planned Features\n* Compile to .exe\n* Making requirement of Go optional\n* rewrite in bash, and for CMD\n* add more config options in the JSON files"
+    "data": {
+        "before": {
+            "text": "",
+            "filePath": "before.md"
+        },
+        "after": {
+            "text": "",
+            "filePath": "after.md"
+        }
     }
 }

@@ -6,18 +6,19 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
-
-	//"path/filepath"
 	"strings"
+	//"path/filepath"
 )
 
 type GConfig struct {
 	Ignore struct {
-		Folders    []string
-		FileTypes  []string
-		Partials   []string
-		FileNames  []string
-		OutputFile bool
+		Folders     []string
+		FileTypes   []string
+		Partials    []string
+		FileNames   []string
+		OutputFile  bool
+		GreadrFiles bool
+		GitFiles    bool
 	}
 	Output struct {
 		Name string
@@ -27,11 +28,16 @@ type GConfig struct {
 		FileTitle   string
 		DoubleSpace bool
 		IgnoreEmpty bool
-		Append      bool
 	}
-	Text struct {
-		Before string
-		After  string
+	Data struct {
+		Before struct {
+			Text     string
+			FilePath string
+		}
+		After struct {
+			Text     string
+			FilePath string
+		}
 	}
 }
 
@@ -41,11 +47,9 @@ func main() {
 
 	args := os.Args[1:]
 	var argOne string
-
 	if len(args) > 0 {
 		argOne = args[0]
 	}
-
 	getJson(argOne)
 
 	fileName := getParentPath()
@@ -56,7 +60,7 @@ func main() {
 
 		if _, err := os.Stat(fileNameLower); os.IsNotExist(err) {
 
-			fmt.Println("!!!Error could not find a readme markdown file - creating...")
+			fmt.Println("	Could not find a readme markdown file - creating...")
 
 			createFile(fileName)
 
@@ -90,7 +94,7 @@ func main() {
 
 	output := removeLines(lines)
 
-	fmt.Println("	Writing updates.")
+	fmt.Println("---Writing updates.")
 
 	if strings.ToLower(data.Output.Type) == "md" {
 		output = "\n# " + data.Format.FileTitle + "\n\n### Created with **greadr**\nhttps://github.com/OwenSteele/greadr\n<pre>" + output + "\n</pre>\n"
@@ -98,104 +102,142 @@ func main() {
 		output = "\n   ----- " + data.Format.FileTitle + " -----   \n\n --- Created with greadr ---\nhttps://github.com/OwenSteele/greadr\n\n" + output + "\n\n"
 	}
 
-	output = data.Text.Before + output + data.Text.After
+	beforeFileText := getExistingFileContent(data.Data.Before.FilePath)
+	afterFileText := getExistingFileContent(data.Data.After.FilePath)
 
-	//if data.Format.Append {
-	//headerfooter := "<|---------------------------------------------|>"
+	if len(beforeFileText) != 0 || beforeFileText != "" {
+		beforeFileText += "\n"
+	}
+	if len(afterFileText) != 0 || afterFileText != "" {
+		afterFileText = "\n" + afterFileText
+	}
+	if len(data.Data.Before.Text) != 0 || data.Data.Before.Text != "" {
+		data.Data.Before.Text += "\n"
+	}
+	if len(data.Data.After.Text) != 0 || data.Data.After.Text != "" {
+		data.Data.After.Text = "\n" + data.Data.After.Text
+	}
 
-	//output = headerfooter + output + headerfooter
-	// if pos < 0 {
-	// 	fileOpen, errOpen := os.OpenFile(fileName, os.O_APPEND, 0644)
-	// 	if errOpen != nil {
-	// 		fmt.Println("!!!Error could not open file to append")
-	// 	}
-	// 	defer fileOpen.Close()
-	// 	if _, errOpen := fileOpen.WriteString(output); errOpen != nil {
-	// 		fmt.Println("!!!Error could not append to file")
-	// 	}
-	// } else {
-	// 	before := string([]rune(existingText)[:pos])
-	// 	fmt.Println("before:" + before) ///////////////////////////
-	// 	after := string([]rune(existingText)[posEnd:])
-	// 	fmt.Println("after:" + after) ///////////////////////////
-	// 	output = before + output + after
-	// 	fmt.Println("output:" + output) ///////////////////////////
-	// 	errWrite := ioutil.WriteFile(fileName, []byte(output), 0644)
-	// 	if errWrite != nil {
-	// 		fmt.Println("!!!Error could not edit readme markdown file")
-	// 		os.Exit(1)
-	// 	}
-	// }
-	// } else {
+	output = strings.Trim(beforeFileText+data.Data.Before.Text+output+data.Data.After.Text+afterFileText, " ")
+	output = strings.Trim(output, "\n")
+
 	errWrite := ioutil.WriteFile(fileName, []byte(output), 0644)
 	if errWrite != nil {
 		fmt.Println("!!!Error could not edit readme markdown file")
 		os.Exit(1)
 	}
-	//}
 
 	fmt.Println("--> git readme file formatted.")
 }
 
-func removeLines(lines []string) string {
-	//lines 0,1 are drive info
-	for i := 0; i < 2; i++ {
-		lines[i] = ""
+func getExistingFileContent(path string) string {
+	if len(path) == 0 || path == "" {
+		return ""
 	}
 
-	lines[2] = "ROOT"
-	output := ""
-	linesRemoved := 0
+	file, err := ioutil.ReadFile(fmt.Sprintf("greadr/%v", path))
+	if err != nil {
+		fmt.Printf("	! '%v' could not be found, ensure it is in the local greadr subfolder\n", path)
+		return ""
+	}
+	return string(file)
+}
 
+func removeLines(lines []string) string {
+
+	output := "ROOT_FOLDER\n"
+	linesRemoved := 0
+	// lines 1-3 are personal drive info
+	ignoreFolderLock := false
 	for i := 3; i < len(lines); i++ {
 
 		ignoreLine := false
 
-		if isEmptyLine(lines[i]) {
-			linesRemoved++
-			continue
-		}
-
-		if strings.Contains(lines[i], fmt.Sprintf("%s.%s", data.Output.Name, data.Output.Type)) && data.Ignore.OutputFile {
-			linesRemoved++
-			continue
-		}
-
-		for _, fileType := range data.Ignore.FileTypes {
-			if strings.Contains(strings.ToLower(lines[i]), fmt.Sprintf("%s%s", ".", fileType)) {
-				ignoreLine = true
+		if ignoreFolderLock {
+			if strings.Contains(strings.ToLower(lines[i]), "+---") || strings.Contains(strings.ToLower(lines[i]), "\"---") || isEmptyLine(lines[i]) {
+				ignoreFolderLock = false
+			} else {
 				linesRemoved++
-				break
+				continue
 			}
-
 		}
 
-		for _, partial := range data.Ignore.Partials {
-			if strings.Contains(strings.ToLower(lines[i]), partial) {
+		for _, folder := range data.Ignore.Folders {
+			if strings.Contains(strings.ToLower(lines[i]), fmt.Sprintf("---%s", folder)) {
+				ignoreFolderLock = true
 				ignoreLine = true
 				linesRemoved++
 				break
 			}
 		}
-
-		for _, fileName := range data.Ignore.FileNames {
-			if strings.Contains(strings.ToLower(lines[i]), fileName) {
-				ignoreLine = true
+		if isEmptyLine(lines[i]) || strings.Contains(lines[i], "No subfolders exist") {
+			linesRemoved++
+			continue
+		} else if strings.Contains(lines[i], fmt.Sprintf("%s.%s", data.Output.Name, data.Output.Type)) && data.Ignore.OutputFile {
+			linesRemoved++
+			continue
+		}
+		if data.Ignore.GreadrFiles {
+			if strings.Contains(strings.ToLower(lines[i]), "greadr.json") {
 				linesRemoved++
-				break
+				continue
+			} else if strings.Contains(strings.ToLower(lines[i]), fmt.Sprintf("---greadr")) {
+				ignoreFolderLock = true
+				linesRemoved++
+				continue
+			}
+		}
+		if data.Ignore.GitFiles {
+			if strings.Contains(strings.ToLower(lines[i]), ".gitignore") {
+				linesRemoved++
+				continue
+			} else if strings.Contains(strings.ToLower(lines[i]), "license") {
+				ignoreFolderLock = true
+				linesRemoved++
+				continue
+			} else if strings.Contains(strings.ToLower(lines[i]), fmt.Sprintf("---.git")) {
+				ignoreFolderLock = true
+				linesRemoved++
+				continue
+			}
+		}
+		if !ignoreLine {
+			for _, fileType := range data.Ignore.FileTypes {
+				if strings.Contains(strings.ToLower(lines[i]), fmt.Sprintf("%s%s", ".", fileType)) {
+					ignoreLine = true
+					linesRemoved++
+					break
+				}
+			}
+		}
+		if !ignoreLine {
+			for _, partial := range data.Ignore.Partials {
+				if strings.Contains(strings.ToLower(lines[i]), partial) {
+					ignoreLine = true
+					linesRemoved++
+					break
+				}
+			}
+		}
+		if !ignoreLine {
+			for _, fileName := range data.Ignore.FileNames {
+				if strings.Contains(strings.ToLower(lines[i]), fileName) {
+					ignoreLine = true
+					linesRemoved++
+					break
+				}
 			}
 		}
 		if ignoreLine {
 			continue
 		}
-
 		if strings.ToLower(data.Output.Type) == "md" {
 			lines[i] = "<br>" + lines[i]
 		}
 
 		output += lines[i] + "\n"
 	}
-	fmt.Printf("	Removed %v lines. ", linesRemoved)
+	fmt.Printf("---Removed %v lines. ", linesRemoved)
 
 	return output
 }

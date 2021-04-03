@@ -13,6 +13,7 @@
     "format": {
         "fileTitle": "GReadr Dir Tree",
         "doubleSpace": false,
-        "ignoreEmpty": true
+        "ignoreEmpty": true,
+        "append": true
     }
 }
