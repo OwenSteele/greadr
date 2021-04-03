@@ -36,7 +36,7 @@ https://golang.org/doc/install
 <pre> > greadr --create-json [templateType]</pre>
 
 **GReadr files can be added to your .gitignore:**
-<pre> > greadr --ignore-greadr<pre>
+<pre> > greadr --ignore-greadr</pre>
 
 #### Ignoring from the dir map
 

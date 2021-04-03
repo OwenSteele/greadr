@@ -13,6 +13,7 @@ GReadr is designed to help map out and visual project repo directories, for both
 ### Created with **greadr**
 https://github.com/OwenSteele/greadr
 <pre>ROOT_FOLDER
+<br>|   .gitignore
 <br>|   greadr.json
 <br>|   greadr.ps1
 <br>|   greadrsetup.exe
@@ -68,7 +69,7 @@ https://golang.org/doc/install
 <pre> > greadr --create-json [templateType]</pre>
 
 **GReadr files can be added to your .gitignore:**
-<pre> > greadr --ignore-greadr<pre>
+<pre> > greadr --ignore-greadr</pre>
 
 #### Ignoring from the dir map
 
