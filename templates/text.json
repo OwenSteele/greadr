@@ -1,0 +1,18 @@
+{
+    "ignore": {
+        "folders": [],
+        "fileTypes": [],
+        "partials": [],
+        "fileNames": [],
+        "OutputFile": false
+    },
+    "output": {
+        "name": "README",
+        "type": "txt"
+    },
+    "format": {
+        "fileTitle": "GReadr Dir Tree",
+        "doubleSpace": false,
+        "ignoreEmpty": true
+    }
+}

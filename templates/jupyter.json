@@ -1,0 +1,26 @@
+{
+    "ignore": {
+        "folders": [],
+        "fileTypes": [
+            "png",
+            "jpg",
+            "jpeg"
+        ],
+        "partials": [
+            "---images",
+            "---.ipynb_checkpoints",
+            "-checkpoint.ipynb"
+        ],
+        "fileNames": [],
+        "OutputFile": true
+    },
+    "output": {
+        "name": "README",
+        "type": "md"
+    },
+    "format": {
+        "fileTitle": "Jupyter Notebooks",
+        "doubleSpace": false,
+        "ignoreEmpty": true
+    }
+}
