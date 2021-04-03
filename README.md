@@ -11,8 +11,7 @@ GReadr is designed to help map out and visual project repo directories, for both
 
 ### Created with **greadr**
 https://github.com/OwenSteele/greadr
-<pre><br>C:.
-<br>|   greadr.json
+<pre><br>|   greadr.json
 <br>|   greadr.ps1
 <br>|   README.md
 <br>+---greadr

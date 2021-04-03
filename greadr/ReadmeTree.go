@@ -143,11 +143,11 @@ func removeLines(lines []string) string {
 		lines[i] = ""
 	}
 
+	lines[2] = "ROOT"
 	output := ""
-
 	linesRemoved := 0
 
-	for i := 2; i < len(lines); i++ {
+	for i := 3; i < len(lines); i++ {
 
 		ignoreLine := false
 
