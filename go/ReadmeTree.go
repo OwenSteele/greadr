@@ -45,6 +45,10 @@ var data GConfig
 
 func main() {
 
+	xxxx := getFolderCount("| | | kjlkj |")
+
+	fmt.Print(xxxx)
+
 	args := os.Args[1:]
 	var argOne string
 	if len(args) > 0 {
@@ -97,9 +101,9 @@ func main() {
 	fmt.Println("---Writing updates.")
 
 	if strings.ToLower(data.Output.Type) == "md" {
-		output = "\n# " + data.Format.FileTitle + "\n\n### Created with **greadr**\nhttps://github.com/OwenSteele/greadr\n<pre>" + output + "\n</pre>\n"
+		output = "\n# " + data.Format.FileTitle + "\n\n### Created with **greadr**(https://github.com/OwenSteele/greadr)\n<pre>" + output + "\n</pre>\n"
 	} else {
-		output = "\n   ----- " + data.Format.FileTitle + " -----   \n\n --- Created with greadr ---\nhttps://github.com/OwenSteele/greadr\n\n" + output + "\n\n"
+		output = "\n   ----- " + data.Format.FileTitle + " -----   \n\n --- Created with greadr --- (https://github.com/OwenSteele/greadr)\n\n" + output + "\n\n"
 	}
 
 	beforeFileText := getExistingFileContent(data.Data.Before.FilePath)
@@ -149,6 +153,7 @@ func removeLines(lines []string) string {
 	linesRemoved := 0
 	// lines 1-3 are personal drive info
 	ignoreFolderLock := false
+	//subDirCount := 0
 	for i := 3; i < len(lines); i++ {
 
 		ignoreLine := false
@@ -166,7 +171,6 @@ func removeLines(lines []string) string {
 			if strings.Contains(strings.ToLower(lines[i]), fmt.Sprintf("---%s", folder)) {
 				ignoreFolderLock = true
 				ignoreLine = true
-				linesRemoved++
 				break
 			}
 		}
@@ -205,7 +209,6 @@ func removeLines(lines []string) string {
 			for _, fileType := range data.Ignore.FileTypes {
 				if strings.Contains(strings.ToLower(lines[i]), fmt.Sprintf("%s%s", ".", fileType)) {
 					ignoreLine = true
-					linesRemoved++
 					break
 				}
 			}
@@ -214,7 +217,6 @@ func removeLines(lines []string) string {
 			for _, partial := range data.Ignore.Partials {
 				if strings.Contains(strings.ToLower(lines[i]), partial) {
 					ignoreLine = true
-					linesRemoved++
 					break
 				}
 			}
@@ -223,12 +225,12 @@ func removeLines(lines []string) string {
 			for _, fileName := range data.Ignore.FileNames {
 				if strings.Contains(strings.ToLower(lines[i]), fileName) {
 					ignoreLine = true
-					linesRemoved++
 					break
 				}
 			}
 		}
 		if ignoreLine {
+			linesRemoved++
 			continue
 		}
 		if strings.ToLower(data.Output.Type) == "md" {
@@ -284,6 +286,19 @@ func isEmptyLine(line string) bool {
 	}
 
 	return false
+}
+func getFolderCount(line string) int {
+	count := 0
+	sep := []rune("|")
+
+	fmt.Printf("rune for | : '%v'", sep)
+
+	for _, r := range []rune(line) {
+		if r == sep[0] {
+			count++
+		}
+	}
+	return count
 }
 
 func getJson(location string) {
