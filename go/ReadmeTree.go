@@ -291,8 +291,6 @@ func getFolderCount(line string) int {
 	count := 0
 	sep := []rune("|")
 
-	fmt.Printf("rune for | : '%v'", sep)
-
 	for _, r := range []rune(line) {
 		if r == sep[0] {
 			count++
