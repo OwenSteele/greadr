@@ -1,12 +1,12 @@
 {
     "ignore": {
-        "folders": [],
+        "folders": [".vs"],
         "fileTypes": [],
         "partials": [],
         "fileNames": [],
         "outputFile": false,
         "greadrFiles": false,
-        "gitFiles": false
+        "gitFiles": true
     },
     "output": {
         "name": "README",

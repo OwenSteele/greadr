@@ -10,15 +10,31 @@ GReadr is designed to help map out and visual project repo directories, for both
 
 # GReadr Dir Tree
 
-### Created with **greadr**
-https://github.com/OwenSteele/greadr
+### Created with **greadr**(https://github.com/OwenSteele/greadr)
 <pre>ROOT_FOLDER
-<br>|   .gitignore
+<br>|   .gitattributes
 <br>|   greadr.json
 <br>|   greadr.ps1
 <br>|   greadrsetup.exe
-<br>|   LICENSE
-<br>|   README.md
+<br>|   \---greadr
+<br>|       \---v16
+<br>+---commands
+<br>|   |   greadr-help.ps1
+<br>|   |   greadr-info.ps1
+<br>|   +---app
+<br>|   |       remove-greadr-alias.ps1
+<br>|   |       set-greadr-alias.ps1
+<br>|   |       set-up-greadr.ps1
+<br>|   |       uninstall-greadr.ps1
+<br>|   +---common
+<br>|   |       confirm-file-exists.ps1
+<br>|   +---git
+<br>|   |       update-git-ignore.ps1
+<br>|   +---goCommands
+<br>|   |       invoke-readme-tree.ps1
+<br>|   \---output
+<br>|           write-data-files.ps1
+<br>|           write-json-files.ps1
 <br>+---go
 <br>|       ReadmeTree.go
 <br>+---greadr
@@ -42,11 +58,14 @@ https://github.com/OwenSteele/greadr
 
 **The installer is large ~80MB**
 
-Use file size filter to clone without the installer (see manual installation):
+use single branch clone to only clone the installer branch:
 ```
- > git clone --filter=blob:limit=50m https://github.com/OwenSteele/greadr
+ > git clone https://github.com/OwenSteele/greadr --branch installer --single-branch
 ```
-
+Clone **without** installer:
+```
+ > git clone https://github.com/OwenSteele/greadr --branch master --single-branch
+```
 
 ### Manual installation
 
