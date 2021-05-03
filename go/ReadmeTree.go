@@ -195,6 +195,9 @@ func removeLines(lines []string) string {
 			if strings.Contains(strings.ToLower(lines[i]), ".gitignore") {
 				linesRemoved++
 				continue
+			} else if strings.Contains(strings.ToLower(lines[i]), ".gitattributes") {
+				linesRemoved++
+				continue
 			} else if strings.Contains(strings.ToLower(lines[i]), "license") {
 				ignoreFolderLock = true
 				linesRemoved++
