@@ -34,7 +34,7 @@ if ($strArgs -eq "") {
         Exit              
     }         
 }
-
+try {  
 switch -regex ($strArgs) {
     ("^-t") { 
         Invoke-Expression "$psGoInvoke -alternatePath $templatePath -x $strArgs -f $psCommonFileExists -g $goFileLoc"  
@@ -61,7 +61,7 @@ switch -regex ($strArgs) {
         & Get-ChildItem $templatePath
     }
     "^--setup" {
-        Invoke-Expression "$psAppSetup -dir $basedir -ga $psAppSetAlias -j $psOutputJson -u $psGitUpdateIgnore -f $psCommonFileExists"
+        Invoke-Expression "$psAppSetup -dir $basedir -ga $psAppSetAlias -j $psOutputJson -u $psGitUpdateIgnore -f $psCommonFileExists -p $PSScriptRoot\greadr.ps1"
     }
     "^--remove-alias" {
         Invoke-Expression $psAppRemoveAlias
@@ -89,4 +89,8 @@ switch -regex ($strArgs) {
         Write-Host "--"
         Write-Host "--help for listed commands" -ForegroundColor Cyan -BackgroundColor Black
     }
+}
+}
+catch {
+    Write-Host "Sorry an unhnandled error occurred. Please 'greadr -h/i' for help." -ForegroundColor Red -BackgroundColor Black
 }

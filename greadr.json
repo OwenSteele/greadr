@@ -1,10 +1,10 @@
 {
     "ignore": {
-        "folders": [".vs"],
+        "folders": [".vs","v16"],
         "fileTypes": [],
         "partials": [],
         "fileNames": [],
-        "outputFile": false,
+        "outputFile": true,
         "greadrFiles": false,
         "gitFiles": true
     },

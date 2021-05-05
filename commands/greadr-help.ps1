@@ -1,4 +1,4 @@
-Write-Host "`nThank you for using Git Readme Builder - GReadr v1.0! By Owen Steele (c) 2021" -ForegroundColor Yellow -BackgroundColor Black
+Write-Host "`nThank you for using Git Readme Builder - GReadr v1.1! By Owen Steele (c) 2021" -ForegroundColor Yellow -BackgroundColor Black
 Write-Host "Find greadr on github: " -NoNewline; Write-Host "https://github.com/OwenSteele/greadr" -ForegroundColor Cyan -BackgroundColor Black
 Write-Host "Type "-NoNewline; Write-Host "greadr --info" -NoNewline -ForegroundColor Green -BackgroundColor Black ; Write-Host " for info about how it works."
 Write-Host "`nGReadr builds a map of your directory, with customs ignores, and markdown formatting for git README's."
@@ -13,6 +13,7 @@ Write-Host "    This setup is required for GReadr to be used in any dir."
 Write-Host "    NOTE: this setup is required for each machine account user."
 Write-Host "`n----- Commands -----" -ForegroundColor Red -BackgroundColor White -NoNewline; Write-Host ""
 Write-Host "--create-json" -NoNewline -ForegroundColor Green -BackgroundColor Black; Write-Host " builds a blank greadr config file in your current dir."
+Write-Host "    [j], [jupyter]" -NoNewline -ForegroundColor Green -BackgroundColor Black; Write-Host " to create your config file from a template, can use ANY template (see -templaet below)"
 Write-Host "    [-i -ignore]" -NoNewline -ForegroundColor Green -BackgroundColor Black; Write-Host " in creating/overwriting greadr.json, adds the greadr.json file to you .gitignore (creates one if .git folder exists)."
 Write-Host "    [--overwrite]" -NoNewline -ForegroundColor Green -BackgroundColor Black; Write-Host " if a greadr.json file already exists, this param is required to change it."
 Write-Host "--create-files" -NoNewline -ForegroundColor Green -BackgroundColor Black; Write-Host " builds blank files for text/data before and after the map tree"

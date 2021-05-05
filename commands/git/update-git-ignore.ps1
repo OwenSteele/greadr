@@ -16,8 +16,3 @@ else {
     Add-Content .\.gitignore "`ngreadr/"
     Write-Host "ignoring local greadr folder" -ForegroundColor Cyan
 }
-if ($existing -like "*greadrsetup.exe*") {}
-else {
-    Add-Content .\.gitignore "`ngreadrsetup.exe"
-    Write-Host "ignoring greadr setup exe" -ForegroundColor Cyan
-}
